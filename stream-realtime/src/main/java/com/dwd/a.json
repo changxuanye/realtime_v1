@@ -1,0 +1,22 @@
+{
+  "common": {
+    "ar": "3",
+    "os": "Android 12.0",
+    "ch": "xiaomi",
+    "is_new": "0",
+    "md": "SAMSUNG Galaxy s22",
+    "mid": "mid_434",
+    "vc": "v2.1.134",
+    "ba": "SAMSUNG",
+    "sid": "f8766257-32df-4dc9-b015-57354e4b8144"
+  },
+  "start": {
+    "entry": "notice",
+    "open_ad_skip_ms": 81915,
+    "open_ad_ms": 5122,
+    "loading_time": 5588,
+    "open_ad_id": 15
+  },
+  "ts": 1744206399362
+}
+
