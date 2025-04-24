@@ -138,7 +138,7 @@ public class DimApp extends BaseApp {
                 return commonTable;
             }
         }).setParallelism(1);
-//        tpDS.print();
+        tpDS.print();
 //
 //
         return tpDS;

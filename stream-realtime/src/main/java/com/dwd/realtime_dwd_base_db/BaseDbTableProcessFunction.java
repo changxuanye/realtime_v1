@@ -39,6 +39,7 @@ public class BaseDbTableProcessFunction extends BroadcastProcessFunction<JSONObj
             String sourceTable = tableProcessDwd.getSourceTable();
             String sourceType = tableProcessDwd.getSourceType();
             String key = getKey(sourceTable, sourceType);
+//            System.out.println("key" + key);
             configMap.put(key, tableProcessDwd);
         }
         JdbcUtils.closeMySQLConnection(mySQLConnection);
@@ -57,6 +58,9 @@ public class BaseDbTableProcessFunction extends BroadcastProcessFunction<JSONObj
         String table = jsonObj.getJSONObject("source").getString("table");
         //获取操作类型
         String type = jsonObj.getString("op");
+        if ("r".equals(type)){
+            type = "c";
+        }
         //拼接key
         String key = getKey(table, type);
         //获取广播状态
@@ -64,6 +68,7 @@ public class BaseDbTableProcessFunction extends BroadcastProcessFunction<JSONObj
         //根据key到广播状态以及configMap中获取对应的配置信息
         TableProcessDwd tp = null;
 
+//        System.out.println("processElement：" + key);
         if((tp = broadcastState.get(key)) != null
             ||(tp = configMap.get(key)) != null){
             //说明当前数据，是需要动态分流处理的事实表数据，将data部分传递到下游
@@ -92,6 +97,8 @@ public class BaseDbTableProcessFunction extends BroadcastProcessFunction<JSONObj
         //拼接key
         String key = getKey(sourceTable, sourceType);
 
+        //processBroadcastElement：favor_info:c
+//        System.out.println("processBroadcastElement：" + key);/
         if("d".equals(op)){
             //从配置表中删除了一条数据，那么需要将广播状态以及configMap中对应的配置也删除掉
             broadcastState.remove(key);

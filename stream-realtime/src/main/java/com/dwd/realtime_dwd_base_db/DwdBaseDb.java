@@ -33,14 +33,22 @@ public class DwdBaseDb extends BaseApp {
                 new ProcessFunction<String, JSONObject>() {
                     @Override
                     public void processElement(String jsonStr, ProcessFunction<String, JSONObject>.Context ctx, Collector<JSONObject> out) throws Exception {
-                        try {
+//                        try {
+//                            JSONObject jsonObject = JSON.parseObject(jsonStr);
+//                            String op = jsonObject.getString("op");
+//                            if (!op.startsWith("bootstrap-")) {
+//                                out.collect(jsonObject);
+//                            }
+//                        } catch (Exception e) {
+//                            throw new RuntimeException("不是标准json");
+//                        }
+                        boolean valid = JSON.isValid(jsonStr);
+                        if (valid) {
                             JSONObject jsonObject = JSON.parseObject(jsonStr);
                             String op = jsonObject.getString("op");
                             if (!op.startsWith("bootstrap-")) {
                                 out.collect(jsonObject);
                             }
-                        } catch (Exception e) {
-                            throw new RuntimeException("不是标准json");
                         }
 
                     }
@@ -73,7 +81,7 @@ public class DwdBaseDb extends BaseApp {
                     }
                 }
         );
-        tpDS.print();
+//        tpDS.print();
 //        v3> TableProcessDwd(sourceTable=user_info, sourceType=c, sinkTable=dwd_user_register, sinkColumns=id,create_time, op=r)
         //TOD0 对配胃流进行广播---broadcast
         MapStateDescriptor<String, TableProcessDwd> mapStateDescriptor

@@ -50,4 +50,7 @@ public class Constant {
     // HBase Zookeeper 客户端端口
     public static final int HBASE_ZK_CLIENT_PORT = 2181;
     public static final String DORIS_DATABASE = "gmall2024_realtime";
+    public static final String DORIS_FE_NODES = "hadoop102:7030";
+
+
 }
