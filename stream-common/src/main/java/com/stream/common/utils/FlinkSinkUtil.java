@@ -1,9 +1,7 @@
 package com.stream.common.utils;
 
 import com.alibaba.fastjson.JSONObject;
-
 import com.stream.common.Bean.TableProcessDwd;
-import com.stream.common.constant.Constant;
 import org.apache.doris.flink.cfg.DorisExecutionOptions;
 import org.apache.doris.flink.cfg.DorisOptions;
 import org.apache.doris.flink.cfg.DorisReadOptions;
@@ -41,10 +39,9 @@ public class FlinkSinkUtil {
                 .build();
         return kafkaSink;
     }
-
     public static KafkaSink<Tuple2<JSONObject, TableProcessDwd>> getKafkaSink(){
         KafkaSink<Tuple2<JSONObject, TableProcessDwd>> kafkaSink = KafkaSink.<Tuple2<JSONObject, TableProcessDwd>>builder()
-                .setBootstrapServers(Constant.KAFKA_BROKERS)
+                .setBootstrapServers(Constat.KAFKA_BROKERS)
                 .setRecordSerializer(new KafkaRecordSerializationSchema<Tuple2<JSONObject, TableProcessDwd>>() {
                     @Nullable
                     @Override
@@ -67,7 +64,7 @@ public class FlinkSinkUtil {
     //扩展：如果流中数据类型不确定，如果将数据写到kafka主题
     public static <T>KafkaSink<T> getKafkaSink(KafkaRecordSerializationSchema<T> ksr){
         KafkaSink<T> kafkaSink = KafkaSink.<T>builder()
-                .setBootstrapServers(Constant.KAFKA_BROKERS)
+                .setBootstrapServers(Constat.KAFKA_BROKERS)
                 .setRecordSerializer(ksr)
                 //当前配置决定是否开启事务，保证写到kafka数据的精准一次
                 //.setDeliveryGuarantee(DeliveryGuarantee.EXACTLY_ONCE)
@@ -88,17 +85,17 @@ public class FlinkSinkUtil {
         DorisSink<String> sink = DorisSink.<String>builder()
                 .setDorisReadOptions(DorisReadOptions.builder().build())
                 .setDorisOptions(DorisOptions.builder() // 设置 doris 的连接参数
-                        .setFenodes("hadoop102:7030")
-                        .setTableIdentifier(Constant.DORIS_DATABASE + "." + tableName)
-                        .setUsername("root")
-                        .setPassword("aaaaaa")
+                        .setFenodes("10.39.48.33:8030")
+                        .setTableIdentifier(Constat.DORIS_DATABASE + "." + tableName)
+                        .setUsername("admin")
+                        .setPassword("zh1028,./")
                         .build())
                 .setDorisExecutionOptions(DorisExecutionOptions.builder() // 执行参数
                         //.setLabelPrefix("doris-label")  // stream-load 导入的时候的 label 前缀
                         .disable2PC() // 开启两阶段提交后,labelPrefix 需要全局唯一,为了测试方便禁用两阶段提交
                         .setDeletable(false)
                         .setBufferCount(3) // 用于缓存stream load数据的缓冲条数: 默认 3
-                        .setBufferSize(1024*1024) //用于缓存stream load数据的缓冲区大小: 默认 1M
+                        .setBufferSize(1024 * 1024) //用于缓存stream load数据的缓冲区大小: 默认 1M
                         .setMaxRetries(3)
                         .setStreamLoadProp(props) // 设置 stream load 的数据格式 默认是 csv,根据需要改成 json
                         .build())
@@ -106,4 +103,5 @@ public class FlinkSinkUtil {
                 .build();
         return sink;
     }
+
 }

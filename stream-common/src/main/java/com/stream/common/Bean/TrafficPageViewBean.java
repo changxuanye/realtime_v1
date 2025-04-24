@@ -15,8 +15,6 @@ import lombok.NoArgsConstructor;
 public class TrafficPageViewBean {
     // 窗口起始时间
     private String stt;
-    // 窗口结束时间
-    private String edt;
     // 当天日期
     private String cur_date;
     // app 版本号

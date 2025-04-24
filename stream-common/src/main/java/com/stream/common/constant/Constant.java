@@ -25,12 +25,12 @@ public class Constant {
     public static final String MYSQL_URL = "jdbc:mysql://10.39.48.36:3306?useSSL=false";
 
     // 用于存储启动流量相关数据的 Kafka 主题
-    public static final String TOPIC_DWD_TRAFFIC_START = "dwd_traffic_start";
+    public static final String TOPIC_DWD_TRAFFIC_START = "xuanye_dwd_traffic_start";
     // 用于存储流量错误相关数据的 Kafka 主题
-    public static final String TOPIC_DWD_TRAFFIC_ERR = "dwd_traffic_err";
-    public static final String TOPIC_DWD_TRAFFIC_PAGE = "dwd_traffic_page";
-    public static final String TOPIC_DWD_TRAFFIC_ACTION = "dwd_traffic_action";
-    public static final String TOPIC_DWD_TRAFFIC_DISPLAY = "dwd_traffic_display";
+    public static final String TOPIC_DWD_TRAFFIC_ERR = "xuanye_dwd_traffic_err";
+    public static final String TOPIC_DWD_TRAFFIC_PAGE = "xuanye_dwd_traffic_page";
+    public static final String TOPIC_DWD_TRAFFIC_ACTION = "xuanye_dwd_traffic_action";
+    public static final String TOPIC_DWD_TRAFFIC_DISPLAY = "xuanye_dwd_traffic_display";
 
     public static final String TOPIC_DWD_INTERACTION_COMMENT_INFO = "xuanye_chang_dwd_interaction_comment_info";
     public static final String TOPIC_DWD_TRADE_CART_ADD = "xuanye_chang_dwd_trade_cart_add";
@@ -49,8 +49,8 @@ public class Constant {
     public static final String HBASE_ZK_QUORUM = "hadoop102,hadoop103,hadoop104";
     // HBase Zookeeper 客户端端口
     public static final int HBASE_ZK_CLIENT_PORT = 2181;
-    public static final String DORIS_DATABASE = "gmall2024_realtime";
-    public static final String DORIS_FE_NODES = "hadoop102:7030";
+    public static final String DORIS_DATABASE = "realtime_v1_xuanye_chang";
+    public static final String DORIS_FE_NODES = "10.39.48.33:8030";
 
 
 }

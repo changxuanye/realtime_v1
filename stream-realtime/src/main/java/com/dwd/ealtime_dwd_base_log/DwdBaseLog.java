@@ -121,7 +121,7 @@ public class DwdBaseLog extends BaseApp {
         displayDs.print("曝光：");
         actionDs.print("动作：");
         //TODO 将不同流的数据写入KAFKA主题中
-        pageDs.sinkTo(FlinkSinkUtil.getKafkaSink(Constat.TOPIC_DWD_TRAFFIC_ERR));
+        pageDs.sinkTo(FlinkSinkUtil.getKafkaSink(Constat.TOPIC_DWD_TRAFFIC_PAGE));
         errDs.sinkTo(FlinkSinkUtil.getKafkaSink(Constat.TOPIC_DWD_TRAFFIC_ERR));
         startDs.sinkTo(FlinkSinkUtil.getKafkaSink(Constat.TOPIC_DWD_TRAFFIC_START));
         displayDs.sinkTo(FlinkSinkUtil.getKafkaSink(Constat.TOPIC_DWD_TRAFFIC_DISPLAY));

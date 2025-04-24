@@ -44,28 +44,26 @@ public class DwsTrafficSourceKeywordPageViewWindow extends BaseSQLApp {
                 "   et\n" +
                 "from page_log\n" +
                 "where page['last_page_id'] = 'search' and page['item_type'] ='keyword' and page['item'] is not null");
-        //searchTable.execute().print();
+//        searchTable.execute().print();
         tableEnv.createTemporaryView("search_table",searchTable);
         //TODO 调用自定义函数完成分词   并和原表的其它字段进行join
         Table splitTable = tableEnv.sqlQuery("SELECT keyword,et FROM search_table,\n" +
                 "LATERAL TABLE(ik_analyze(fullword)) t(keyword)");
         tableEnv.createTemporaryView("split_table",splitTable);
-        //tableEnv.executeSql("select * from split_table").print();
+//        tableEnv.executeSql("select * from split_table").print();
         //TODO 分组、开窗、聚合
         Table resTable = tableEnv.sqlQuery("SELECT \n" +
                 "     date_format(window_start, 'yyyy-MM-dd HH:mm:ss') stt,\n" +
-                "     date_format(window_end, 'yyyy-MM-dd HH:mm:ss') edt,\n" +
                 "     date_format(window_start, 'yyyy-MM-dd') cur_date,\n" +
                 "     keyword,\n" +
                 "     count(*) keyword_count\n" +
                 "  FROM TABLE(\n" +
-                "    TUMBLE(TABLE split_table, DESCRIPTOR(et), INTERVAL '10' second))\n" +
-                "  GROUP BY window_start, window_end,keyword");
-        //resTable.execute().print();
+                "    TUMBLE(TABLE split_table, DESCRIPTOR(et), INTERVAL '1' second))\n" +
+                "  GROUP BY window_start,keyword");
+//        resTable.execute().print();
         //TODO 将聚合的结果写到Doris中
         tableEnv.executeSql("create table dws_traffic_source_keyword_page_view_window(" +
                 "  stt string, " +  // 2023-07-11 14:14:14
-                "  edt string, " +
                 "  cur_date string, " +
                 "  keyword string, " +
                 "  keyword_count bigint " +
@@ -73,8 +71,8 @@ public class DwsTrafficSourceKeywordPageViewWindow extends BaseSQLApp {
                 " 'connector' = 'doris'," +
                 " 'fenodes' = '" + Constant.DORIS_FE_NODES + "'," +
                 "  'table.identifier' = '" + Constant.DORIS_DATABASE + ".dws_traffic_source_keyword_page_view_window'," +
-                "  'username' = 'root'," +
-                "  'password' = 'aaaaaa', " +
+                "  'username' = 'admin'," +
+                "  'password' = 'zh1028,./', " +
                 "  'sink.properties.format' = 'json', " +
                 "  'sink.buffer-count' = '4', " +
                 "  'sink.buffer-size' = '4086'," +

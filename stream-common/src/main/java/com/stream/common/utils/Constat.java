@@ -35,8 +35,8 @@ public class Constat {
 
     public static final String TOPIC_DWD_USER_REGISTER = "dwd_user_register";
 
-    public static final String DORIS_FE_NODES = "hadoop102:7030";
+    public static final String DORIS_FE_NODES = "10.39.48.33:8030";
 
-    public static final String DORIS_DATABASE = "gmall2024_realtime";
+    public static final String DORIS_DATABASE = "realtime_v1_xuanye_chang";
 
 }
