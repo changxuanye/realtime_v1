@@ -1,6 +1,6 @@
-package com.dws.reaffic_source_keyword_page_view_window.app;
+package com.dws.realtime_dws_traffic_source_keyword_page_view_window.app;
 
-import com.dws.reaffic_source_keyword_page_view_window.function.KeywordUDTF;
+import com.dws.realtime_dws_traffic_source_keyword_page_view_window.function.KeywordUDTF;
 import com.stream.common.base.BaseSQLApp;
 import com.stream.common.constant.Constant;
 import com.stream.common.utils.SQLUtil;

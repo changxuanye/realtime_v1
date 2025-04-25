@@ -1,4 +1,4 @@
-package com.dws.reaffic_source_keyword_page_view_window.util;
+package com.dws.realtime_dws_traffic_source_keyword_page_view_window.util;
 
 import org.wltea.analyzer.core.IKSegmenter;
 import org.wltea.analyzer.core.Lexeme;

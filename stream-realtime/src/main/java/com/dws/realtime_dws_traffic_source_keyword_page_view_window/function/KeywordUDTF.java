@@ -1,6 +1,6 @@
-package com.dws.reaffic_source_keyword_page_view_window.function;
+package com.dws.realtime_dws_traffic_source_keyword_page_view_window.function;
 
-import com.dws.reaffic_source_keyword_page_view_window.util.KeywordUtil;
+import com.dws.realtime_dws_traffic_source_keyword_page_view_window.util.KeywordUtil;
 import org.apache.flink.table.annotation.DataTypeHint;
 import org.apache.flink.table.annotation.FunctionHint;
 import org.apache.flink.table.functions.TableFunction;
