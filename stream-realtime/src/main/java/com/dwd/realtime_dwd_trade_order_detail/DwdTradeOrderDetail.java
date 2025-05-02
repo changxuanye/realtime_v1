@@ -57,6 +57,7 @@ public class DwdTradeOrderDetail extends BaseSQLApp {
 
         //TODO 过滤出明细活动数据
         Table orderDetailActivity = tableEnv.sqlQuery(
+
                 "select " +
                         "`after`['order_detail_id'] order_detail_id, " +
                         "`after`['activity_id'] activity_id, " +
@@ -70,8 +71,8 @@ public class DwdTradeOrderDetail extends BaseSQLApp {
                 "select " +
                         "`after`['order_detail_id'] order_detail_id, " +
                         "`after`['coupon_id'] coupon_id " +
-                        "from KafkaTable " +
-                        "where `source`['table']='order_detail_coupon' ");
+                        " from KafkaTable " +
+                        " where `source`['table']='order_detail_coupon' ");
         tableEnv.createTemporaryView("order_detail_coupon", orderDetailCoupon);
 
         //TODO 关联上述4张表

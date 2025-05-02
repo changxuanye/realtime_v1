@@ -17,6 +17,7 @@ public class DwdTradeOrderPaySucDetail extends BaseSQLApp {
     @Override
     public void handle(StreamTableEnvironment tEnv) {
         //TODO 从下单事实表读取数据 创建动态表
+
         //TODO 从下单事实表读取数据 创建动态表
         tEnv.executeSql(
                 "create table dwd_trade_order_detail(" +

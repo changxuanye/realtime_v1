@@ -30,6 +30,7 @@ public class DwdBaseDb extends BaseApp {
     public void Handle(StreamExecutionEnvironment env, DataStreamSource<String> kafkaSourceDS) {
             //TOD0 对流中的数据进行类型转换并进行简单的ETL
         SingleOutputStreamOperator<JSONObject> jsonObjDS = kafkaSourceDS.process(
+
                 new ProcessFunction<String, JSONObject>() {
                     @Override
                     public void processElement(String jsonStr, ProcessFunction<String, JSONObject>.Context ctx, Collector<JSONObject> out) throws Exception {

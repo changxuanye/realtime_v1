@@ -18,6 +18,7 @@ public class DwdTradeCartAdd extends BaseSQLApp {
     public void handle(StreamTableEnvironment tableEnv) {
         //todo 从kafka读取数据创建动态表
         readOdsDb(tableEnv,Constant.TOPIC_DWD_TRADE_CART_ADD);
+
 //        tableEnv.executeSql("select * from KafkaTable where `source`['table']='cart_info'");
         /*
 `after`['id'],

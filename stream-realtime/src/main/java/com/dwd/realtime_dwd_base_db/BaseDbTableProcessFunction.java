@@ -100,6 +100,7 @@ public class BaseDbTableProcessFunction extends BroadcastProcessFunction<JSONObj
         //processBroadcastElement：favor_info:c
 //        System.out.println("processBroadcastElement：" + key);/
         if("d".equals(op)){
+
             //从配置表中删除了一条数据，那么需要将广播状态以及configMap中对应的配置也删除掉
             broadcastState.remove(key);
             configMap.remove(key);

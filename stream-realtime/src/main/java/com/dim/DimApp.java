@@ -110,12 +110,14 @@ public class DimApp extends BaseApp {
                         }
         ).setParallelism(1);
         return tpDS;
+
     }
 
     private SingleOutputStreamOperator<TableProcessDim> readTableProcess(StreamExecutionEnvironment env) {
         MySqlSource<String> mySqlSource = FlinkSourceUtil.getMySqlSource("realtime_v1", "table_process_dim");
         DataStreamSource<String> ds = env.fromSource(mySqlSource, WatermarkStrategy.noWatermarks(), "MySQL Source")
                 // 设置 source 节点的并行度为 4
+
                 .setParallelism(1);// 设置 sink 节点并行度为 1
 //        kafkaSource_log.print();
         //5.1创建MySQLSource对象
@@ -123,6 +125,7 @@ public class DimApp extends BaseApp {
 //       ds.print();
 
         //TODO 6.对配置流中的数据类型进行转换 jsonStr->实体类对象
+
         SingleOutputStreamOperator<TableProcessDim> tpDS = ds.map(new MapFunction<String, TableProcessDim>() {
             @Override
             public TableProcessDim map(String jsonStr) throws Exception {
@@ -138,6 +141,7 @@ public class DimApp extends BaseApp {
                 return commonTable;
             }
         }).setParallelism(1);
+
         tpDS.print();
 //
 //

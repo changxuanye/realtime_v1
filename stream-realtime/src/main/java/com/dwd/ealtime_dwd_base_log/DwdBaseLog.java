@@ -1,22 +1,16 @@
 package com.dwd.ealtime_dwd_base_log;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.stream.common.base.BaseApp;
 import com.stream.common.utils.Constat;
 import com.stream.common.utils.DateFormatUtil;
-
 import com.stream.common.utils.FlinkSinkUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.functions.RichMapFunction;
-import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.api.common.state.ValueState;
 import org.apache.flink.api.common.state.ValueStateDescriptor;
 import org.apache.flink.configuration.Configuration;
-import org.apache.flink.connector.base.DeliveryGuarantee;
-import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
 import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.KeyedStream;
@@ -26,9 +20,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.jetbrains.annotations.NotNull;
-
 /*
 需要启动的进程
 1、
@@ -89,7 +81,6 @@ public class DwdBaseLog extends BaseApp {
                                     //将曝光日志写到曝光侧输出流
                                     ctx.output(displayTag, newDisplayObj.toJSONString());
                                 }
-                                jsonObj.remove("displays");
                             }
                             //动作
                             JSONArray actionsArr = jsonObj.getJSONArray("actions");
