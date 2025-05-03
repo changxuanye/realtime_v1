@@ -21,7 +21,7 @@ public class FlinkCDC_mysqltokafka {
             properties.setProperty("decimal.handling.mode","string");
             properties.setProperty("time.precision.mode","connect");
             MySqlSource<String> mySqlSource = MySqlSource.<String>builder()
-                    .hostname("10.39.48.36")
+                    .hostname("10.160.60.17")
                     .startupOptions(StartupOptions.initial())
                     .debeziumProperties(properties)
                     .port(3306)

@@ -49,7 +49,7 @@ public class FlinkSourceUtil {
 
 
         MySqlSource<String> mySqlSource = MySqlSource.<String>builder()
-                .hostname("10.39.48.36")
+                .hostname("10.160.60.17")
                 .startupOptions(StartupOptions.initial())
                 .debeziumProperties(properties)
                 .port(3306)

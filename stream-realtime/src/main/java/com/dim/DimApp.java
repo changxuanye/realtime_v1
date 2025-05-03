@@ -40,6 +40,7 @@ public class DimApp extends BaseApp {
 //        jsonObjDs.print();
         //TODO 使用FlinkCDC读取配置表中的配置信息
         SingleOutputStreamOperator<TableProcessDim> tpDS = readTableProcess(env);
+        tpDS.print();
        //TODO 根据配置表中的配置信息到HBase中执行建表或者删除表操作
         tpDS = createHBaseTable(tpDS);
 //        表空间xuanye_chang下的表dim_coupon_info已存在

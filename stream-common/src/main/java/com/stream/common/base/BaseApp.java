@@ -37,7 +37,6 @@ public abstract class BaseApp {
         env.getCheckpointConfig().setCheckpointTimeout(6000L);
         //2.3设置job取消后检查点是否保留
         env.getCheckpointConfig().setExternalizedCheckpointCleanup(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION);
-
         //2.4设置两个检查点之间最小时间间隔
         env.getCheckpointConfig().setMinPauseBetweenCheckpoints(2000L);
         //2.5设置重启策略

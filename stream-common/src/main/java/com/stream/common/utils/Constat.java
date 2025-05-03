@@ -13,7 +13,7 @@ public class Constat {
     public static final String HBASE_NAMESPACE = "xuanye_chang";
 
     public static final String MYSQL_DRIVER = "com.mysql.cj.jdbc.Driver";
-    public static final String MYSQL_URL = "jdbc:mysql://10.39.48.36:3306?useSSL=false";
+    public static final String MYSQL_URL = "jdbc:mysql://10.160.60.17:3306?useSSL=false";
 
     public static final String TOPIC_DWD_TRAFFIC_START = "xuanye_dwd_traffic_start";
     public static final String TOPIC_DWD_TRAFFIC_ERR = "xuanye_dwd_traffic_err";
