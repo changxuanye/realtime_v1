@@ -81,14 +81,11 @@ public class DimApp extends BaseApp {
                             public void open(Configuration parameters) throws Exception {
                                 hbaseConn = HbaseUtils1.getHBaseConnection();
                             }
-
                             @Override
                             public void close() throws Exception {
                                 HbaseUtils1.closeHBaseConnection(hbaseConn);
                             }
-
                             @Override
-
                             public TableProcessDim map(TableProcessDim tableProcessDim) throws Exception {
                                 //获取对配置表进行操作的类型
                                 String op = tableProcessDim.getOp();
@@ -104,7 +101,6 @@ public class DimApp extends BaseApp {
                                 }else{
                                     HbaseUtils1.dropHBaseTable(hbaseConn, Constat.HBASE_NAMESPACE,sinkTable);
                                     HbaseUtils1.createHBaseTable(hbaseConn,Constat.HBASE_NAMESPACE,sinkTable,sinkFamilies);
-
                                 }
                                 return tableProcessDim;
                             }
@@ -144,8 +140,7 @@ public class DimApp extends BaseApp {
         }).setParallelism(1);
 
         tpDS.print();
-//
-//
+
         return tpDS;
     }
 

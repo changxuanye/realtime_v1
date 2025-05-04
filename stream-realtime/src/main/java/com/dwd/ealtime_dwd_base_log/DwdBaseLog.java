@@ -33,7 +33,7 @@ public class DwdBaseLog extends BaseApp {
 
     @Override
     public void Handle(StreamExecutionEnvironment env, DataStreamSource<String> kafkaSourceDS) {
-        //TODO 对流中数据进行转换  并做简单的ETL转换
+        //TODO 对流中数据进行转换并做简单的ETL转换
         SingleOutputStreamOperator<JSONObject> jsonObjDS = etl(kafkaSourceDS);
         //TODO 对新老访客标记进行修复
         SingleOutputStreamOperator<JSONObject> filedDS = fixedNewAndOld(jsonObjDS);
@@ -101,7 +101,6 @@ public class DwdBaseLog extends BaseApp {
                     }
                 }
         );
-
         SideOutputDataStream<String> errDs = pageDs.getSideOutput(errTag);
         SideOutputDataStream<String> startDs = pageDs.getSideOutput(startTag);
         SideOutputDataStream<String> displayDs = pageDs.getSideOutput(displayTag);
@@ -117,10 +116,6 @@ public class DwdBaseLog extends BaseApp {
         startDs.sinkTo(FlinkSinkUtil.getKafkaSink(Constat.TOPIC_DWD_TRAFFIC_START));
         displayDs.sinkTo(FlinkSinkUtil.getKafkaSink(Constat.TOPIC_DWD_TRAFFIC_DISPLAY));
         actionDs.sinkTo(FlinkSinkUtil.getKafkaSink(Constat.TOPIC_DWD_TRAFFIC_ACTION));
-
-
-
-        
     }
 
     private static SingleOutputStreamOperator<JSONObject> fixedNewAndOld(SingleOutputStreamOperator<JSONObject> jsonObjDS) {
