@@ -51,7 +51,7 @@ public class DwdInteractionCommentInfo extends BaseSQLApp {
                 "FROM comment_info  AS c\n" +
                 "JOIN base_dic FOR SYSTEM_TIME AS OF c.pt AS dic\n" +
                 "ON c.appraise = dic.dic_code");
-//        joinedTable.execute().print();
+        joinedTable.execute().print();
 
 
 

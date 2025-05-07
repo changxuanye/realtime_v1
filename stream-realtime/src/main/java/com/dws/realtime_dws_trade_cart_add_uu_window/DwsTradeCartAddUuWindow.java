@@ -141,9 +141,9 @@ public class DwsTradeCartAddUuWindow extends BaseApp {
         );
         aggregateDS.print();
         //TODO 7.将聚合的结果写到Doris
-//        aggregateDS.print();
-//        aggregateDS
-//                .map(new BeanToJsonStrMapFunction<>())
-//                .sinkTo(FlinkSinkUtil.getDorisSink("dws_trade_cart_add_uu_window"));
+        aggregateDS.print();
+        aggregateDS
+                .map(new BeanToJsonStrMapFunction<>())
+                .sinkTo(FlinkSinkUtil.getDorisSink("dws_trade_cart_add_uu_window"));
     }
 }

@@ -12,6 +12,7 @@
     <modules>
         <module>stream-realtime</module>
         <module>stream-common</module>
+        <module>stream_WordGuardian</module>
     </modules>
 
     <properties>

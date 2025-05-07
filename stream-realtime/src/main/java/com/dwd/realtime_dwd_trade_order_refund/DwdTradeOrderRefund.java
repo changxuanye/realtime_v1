@@ -73,7 +73,6 @@ public class DwdTradeOrderRefund extends BaseSQLApp {
                         "join base_dic for system_time as of ri.pt as dic1 " +
                         "on ri.refund_type=dic1.dic_code " +
                         "join base_dic for system_time as of ri.pt as dic2 " +
-
                         "on ri.refund_reason_type=dic2.dic_code ");
 
         // 5. 写出到 kafka

@@ -1,5 +1,4 @@
 package com.dim;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.retailersv1.function.HBaseSinkFunction;
@@ -25,8 +24,6 @@ import org.apache.flink.util.Collector;
 import org.apache.hadoop.hbase.client.Connection;
 import com.stream.common.utils.HbaseUtils1;
 import org.jetbrains.annotations.NotNull;
-
-
 public class DimApp extends BaseApp {
     public static void main(String[] args) throws Exception {
         new DimApp().start(10001,1,"aaa",Constat.TOPIC_DB,"source_yewu");

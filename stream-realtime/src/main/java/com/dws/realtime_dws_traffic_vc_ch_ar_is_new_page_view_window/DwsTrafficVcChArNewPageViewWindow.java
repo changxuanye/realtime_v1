@@ -32,7 +32,7 @@ import com.stream.common.utils.FlinkSinkUtil;
 
 public class DwsTrafficVcChArNewPageViewWindow extends BaseApp {
     public static void main(String[] args) {
-        new DwsTrafficVcChArNewPageViewWindow().start(10022,4,"dws_traffic_vc_ch_ar_is_new_page_view_window", Constat.TOPIC_DWD_TRAFFIC_PAGE,"source8");
+        new DwsTrafficVcChArNewPageViewWindow().start(10032,4,"dws_traffic_vc_ch_ar_is_new_page_view_window", Constat.TOPIC_DWD_TRAFFIC_PAGE,"source89");
     }
 
     @Override
@@ -164,6 +164,6 @@ public class DwsTrafficVcChArNewPageViewWindow extends BaseApp {
 
         operator.print();
 
-        operator.sinkTo(FlinkSinkUtil.getDorisSink("dws_traffic_vc_ch_ar_is_new_page_view_window"));
+//        operator.sinkTo(FlinkSinkUtil.getDorisSink("dws_traffic_vc_ch_ar_is_new_page_view_window"));
     }
 }

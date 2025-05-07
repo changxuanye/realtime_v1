@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 public class DwdBaseLog extends BaseApp {
     private static String brokers = "cdh02:9092";
     public static void main(String[] args) {
-        new DwdBaseLog().start(10012,1,"DwdBaseLog", Constat.TOPIC_LOG,"source_log");
+        new DwdBaseLog().start(10002,1,"DwdBaseLog", Constat.TOPIC_LOG,"source_log");
     }
 
     @Override

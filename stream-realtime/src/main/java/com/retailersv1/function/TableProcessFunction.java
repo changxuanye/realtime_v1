@@ -1,5 +1,4 @@
 package com.retailersv1.function;
-
 import com.alibaba.fastjson.JSONObject;
 import com.stream.common.Bean.TableProcessDim;
 import com.stream.common.utils.Constat;
@@ -10,7 +9,6 @@ import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.co.BroadcastProcessFunction;
 import org.apache.flink.util.Collector;
-
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

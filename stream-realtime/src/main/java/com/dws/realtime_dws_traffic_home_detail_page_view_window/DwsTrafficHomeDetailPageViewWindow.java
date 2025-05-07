@@ -1,4 +1,4 @@
-
+package com.dws.realtime_dws_traffic_home_detail_page_view_window;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.stream.common.Bean.TrafficHomeDetailPageViewBean;
@@ -159,9 +159,9 @@ public class DwsTrafficHomeDetailPageViewWindow extends BaseApp {
         );
         //TODO 8.将聚合的结果写到Doris
         reduceDS.print();
-        reduceDS
-                .map(new BeanToJsonStrMapFunction<TrafficHomeDetailPageViewBean>())
-                .sinkTo(FlinkSinkUtil.getDorisSink("dws_traffic_home_detail_page_view_window"));
+//        reduceDS
+//                .map(new BeanToJsonStrMapFunction<TrafficHomeDetailPageViewBean>())
+//                .sinkTo(FlinkSinkUtil.getDorisSink("dws_traffic_home_detail_page_view_window"));
     }
 
 }

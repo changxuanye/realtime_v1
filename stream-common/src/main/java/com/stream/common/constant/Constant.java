@@ -22,7 +22,7 @@ public class Constant {
     // MySQL JDBC 驱动类
     public static final String MYSQL_DRIVER = "com.mysql.cj.jdbc.Driver";
     // MySQL 数据库连接 URL
-    public static final String MYSQL_URL = "jdbc:mysql://10.39.48.36:3306?useSSL=false";
+    public static final String MYSQL_URL = "jdbc:mysql://10.160.60.17:3306?useSSL=false";
 
     // 用于存储启动流量相关数据的 Kafka 主题
     public static final String TOPIC_DWD_TRAFFIC_START = "xuanye_dwd_traffic_start";
