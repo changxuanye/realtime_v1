@@ -108,7 +108,7 @@ public class DimApp extends BaseApp {
     }
 
     private SingleOutputStreamOperator<TableProcessDim> readTableProcess(StreamExecutionEnvironment env) {
-        MySqlSource<String> mySqlSource = FlinkSourceUtil.getMySqlSource("realtime_v1", "table_process_dim");
+        MySqlSource<String> mySqlSource = FlinkSourceUtil.getMySqlSource("realtime_v1_config", "table_process_dim");
         DataStreamSource<String> ds = env.fromSource(mySqlSource, WatermarkStrategy.noWatermarks(), "MySQL Source")
                 // 设置 source 节点的并行度为 4
 

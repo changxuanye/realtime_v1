@@ -15,9 +15,9 @@ import java.util.List;
  */
 public class JdbcUtils {
 
-    public static Connection getMySQLConnection() throws Exception {
+    public static Connection getMySQLConnection(String mysqlUrl,String username,String pwd) throws Exception {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        return DriverManager.getConnection(Constat.MYSQL_URL,Constat.MYSQL_USER_NAME, Constat.MYSQL_PASSWORD);
+        return DriverManager.getConnection(mysqlUrl, username, pwd);
     }
 
 

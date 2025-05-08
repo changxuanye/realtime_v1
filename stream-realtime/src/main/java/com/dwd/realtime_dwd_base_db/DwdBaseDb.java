@@ -23,7 +23,7 @@ import org.apache.flink.util.Collector;
 public class DwdBaseDb extends BaseApp {
 
     public static void main(String[] args) {
-        new DwdBaseDb().start(10019,4,"dwd_base_db", Constat.TOPIC_DB,"source05");
+        new DwdBaseDb().start(10019,4,"dwd_base_db", Constat.TOPIC_DB,"source03");
     }
 
     @Override
@@ -58,7 +58,7 @@ public class DwdBaseDb extends BaseApp {
 //        jsonObjDS.print();
             //ToDo 使用FlinkcDc读取配置表中的配置信息
         // 创道MysqlSource对象读取数据 封装为流
-        MySqlSource<String> mySqlSource = FlinkSourceUtil.getMySqlSource("realtime_v1","table_process_dwd");
+        MySqlSource<String> mySqlSource = FlinkSourceUtil.getMySqlSource("realtime_v1_config","table_process_dwd");
         DataStreamSource<String> mysqlstrDS = env.fromSource(mySqlSource, WatermarkStrategy.noWatermarks(), "mysql_source1");
             //对流中数据进行类型转换jsonStr->史体类对象
         SingleOutputStreamOperator<TableProcessDwd> tpDS = mysqlstrDS.map(

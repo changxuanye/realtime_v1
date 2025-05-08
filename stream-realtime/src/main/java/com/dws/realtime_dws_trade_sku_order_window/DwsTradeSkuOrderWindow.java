@@ -1,11 +1,9 @@
 package com.dws.realtime_dws_trade_sku_order_window;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.stream.common.Bean.TradeSkuOrderBean;
 import com.stream.common.base.BaseApp;
 import com.stream.common.constant.Constant;
-import com.stream.common.function.BeanToJsonStrMapFunction;
 import com.stream.common.function.DimAsyncFunction;
 import com.stream.common.utils.DateFormatUtil;
 import com.stream.common.utils.FlinkSinkUtil;
@@ -23,105 +21,16 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction;
 import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.streaming.api.functions.windowing.ProcessAllWindowFunction;
-import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
-import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.util.Collector;
-
 import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @author Felix
- * @date 2024/6/12
- * sku粒度下单业务过程聚合统计
- *      维度：sku
- *      度量：原始金额、优惠券减免金额、活动减免金额、实付金额
- * 需要启动的进程
- *      zk、kafka、maxwell、hdfs、hbase、redis、doris、DwdTradeOrderDetail、DwsTradeSkuOrderWindow
- * 开发流程
- *      基本环境准备
- *      检查点相关的设置
- *      从kafka的下单事实表中读取数据
- *      空消息的处理并将流中数据类型进行转换  jsonStr->jsonObj
- *      去重
- *          为什么会产生重复数据？
- *              我们是从下单事实表中读取数据的，下单事实表由订单表、订单明细表、订单明细活动表、订单明细优惠券表四张表组成
- *              订单明细是主表，和订单表进行关联的时候，使用的是内连接
- *              和订单活动以及订单明细优惠券表进行关联的时候，使用的是左外连接
- *              如果左外连接，左表数据先到，右表数据数据后到，查询结果会由3条数据
- *                  左表      null    标记为+I
- *                  左表      null    标记为-D
- *                  左表      右表     标记为+I
- *              这样的数据，发送到kafka主题，kafka主题会接收到3条消息
- *                  左表  null
- *                  null
- *                  左表  右表
- *              所以我们在从下单事实表中读取数据的时候，需要过滤空消息，并去重
- *          去重前：需要按照唯一键进行分组
- *          去重方案1：状态+定时器
- *              当第一条数据到来的时候，将数据放到状态中保存起来，并注册5s后执行的定时器
- *              当第二条数据到来的时候，会用第二条数据的聚合时间和第一条数据的聚合时间进行比较，将时间大的数据放到状态中
- *              当定时器被触发执行的时候，将状态中的数据发送到下游
- *              优点：如果出现重复了，只会向下游发送一条数据，数据不会膨胀
- *              缺点：时效性差
- *          去重方案2：状态+抵消
- *              当第一条数据到来的时候，将数据放到状态中，并向下游传递
- *              当第二条数据到来的时候，将状态中影响到度量值的字段进行取反，传递到下游
- *              并将第二条数据也向下游传递
- *              优点：时效性好
- *              缺点：如果出现重复了，向下游传递3条数据，数据出现膨胀
- *      指定Watermark以及提取事件时间字段
- *      再次对流中数据进行类型转换   jsonObj->实体类对象 （相当于wordcount封装二元组的过程）
- *      按照统计的维度进行分组
- *      开窗
- *      聚合计算
- *      维度关联
- *          最基本的实现      HBaseUtil->getRow
- *          优化1：旁路缓存
- *              思路：先从缓存中获取维度数据，如果从缓存中获取到了维度数据(缓存命中)，直接将其作为结果进行返回；
- *                  如果在缓存中，没有找到要关联的维度，发送请求到HBase中进行查询，并将查询的结果放到缓存中缓存起来，方便下次查询使用
- *              选型：
- *                  状态      性能很好，维护性差
- *                  redis    性能不错，维护性好      √
- *              关于Redis的设置
- *                  key：    维度表名:主键值
- *                  type：   String
- *                  expire:  1day   避免冷数据常驻内存，给内存带来压力
- *                  注意：如果维度数据发生了变化，需要将清除缓存      DimSinkFunction->invoke
- *          优化2：异步IO
- *              为什么使用异步？
- *                  在flink程序中，想要提升某个算子的处理能力，可以提升这个算子的并行度，但是更多的并行度意味着需要更多的硬件资源，不可能无限制
- *                  的提升，在资源有限的情况下，可以考虑使用异步
- *              异步使用场景：
- *                  用外部系统的数据，扩展流中数据的时候
- *              默认情况下，如果使用map算子，对流中数据进行处理，底层使用的是同步的处理方式，处理完一个元素后再处理下一个元素，性能较低
- *              所以在做维度关联的时候，可以使用Flink提供的发送异步请求的API，进行异步处理
- *              AsyncDataStream.[un]orderedWait(
- *                  流,
- *                  如何发送异步请求，需要实现AsyncFunction接口,
- *                  超时时间,
- *                  时间单位
- *              )
- *              HBaseUtil添加异步读取数据的方法
- *              RedisUtil添加异步读写数据的方法
- *              封装了一个模板类，专门发送异步请求进行维度关联
- *                  class DimAsyncFunction extends RichAsyncFunction[asynvInvoke] implements DimJoinFunction[getRowKey、getTableName、addDims]{
- *                      asyncInvoke:
- *                          //创建异步编排对象，有返回值
- *                          CompletableFuture.supplyAsync
- *                          //执行线程任务  有入参、有返回值
- *                          .thenApplyAsync
- *                          //执行线程任务  有入参、无返回值
- *                          .thenAcceptAsync
- *                  }
- *      将数据写到Doris中
- */
 public class DwsTradeSkuOrderWindow extends BaseApp {
     public static void main(String[] args) throws Exception {
         new DwsTradeSkuOrderWindow().start(
-                10029,
+                10028,
                 4,
                 "dws_trade_sku_order_window",
                 Constant.TOPIC_DWD_TRADE_ORDER_DETAIL,
@@ -184,7 +93,7 @@ public class DwsTradeSkuOrderWindow extends BaseApp {
                                 new SerializableTimestampAssigner<JSONObject>() {
                                     @Override
                                     public long extractTimestamp(JSONObject jsonObj, long recordTimestamp) {
-                                        return jsonObj.getLong("ts_ms");
+                                        return jsonObj.getLong("ts");
                                     }
                                 }
                         )
@@ -198,7 +107,7 @@ public class DwsTradeSkuOrderWindow extends BaseApp {
                 BigDecimal splitCouponAmount = jsonObj.getBigDecimal("split_coupon_amount");
                 BigDecimal splitActivityAmount = jsonObj.getBigDecimal("split_activity_amount");
                 BigDecimal splitTotalAmount = jsonObj.getBigDecimal("split_total_amount");
-                long ts = jsonObj.getLong("ts_ms");
+                long ts = jsonObj.getLong("ts");
                 TradeSkuOrderBean orderBean = TradeSkuOrderBean.builder()
                         .skuId(skuId)
                         .originalAmount(splitOriginalAmount)
@@ -216,7 +125,7 @@ public class DwsTradeSkuOrderWindow extends BaseApp {
         KeyedStream<TradeSkuOrderBean, String> skuIdKeyedDs = beanDs.keyBy(TradeSkuOrderBean::getSkuId);
 //        开窗
         AllWindowedStream<TradeSkuOrderBean, TimeWindow> windowDS  =
-                skuIdKeyedDs.windowAll(TumblingEventTimeWindows.of(org.apache.flink.streaming.api.windowing.time.Time.seconds(1)));
+                skuIdKeyedDs.windowAll(TumblingEventTimeWindows.of(org.apache.flink.streaming.api.windowing.time.Time.seconds(5)));
 //        聚合
         SingleOutputStreamOperator<TradeSkuOrderBean> reduceDs = windowDS.reduce(new ReduceFunction<TradeSkuOrderBean>() {
             @Override
@@ -245,6 +154,8 @@ public class DwsTradeSkuOrderWindow extends BaseApp {
                 }
         );
 //   reduceDs.print();
+
+
         SingleOutputStreamOperator<TradeSkuOrderBean> withSkuInfoDS = AsyncDataStream.unorderedWait(
                 reduceDs,
                 new DimAsyncFunction<TradeSkuOrderBean>() {
@@ -387,7 +298,15 @@ public class DwsTradeSkuOrderWindow extends BaseApp {
         );
         withC1DS.print();
 //        withC1DS.map(new BeanToJsonStrMapFunction<>())
-//                .sinkTo(FlinkSinkUtil.getDorisSink("dws_trade_sku_order_window"));
+//
+
+        SingleOutputStreamOperator<String> operator = withC1DS
+                //在向Doris写数据前，将流中统计的实体类对象转换为json格式字符串
+                .map(JSONObject::toJSONString);
+
+        operator.print();
+
+        operator.sinkTo(FlinkSinkUtil.getDorisSink("dws_trade_sku_order_window"));
     }
 
 

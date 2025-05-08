@@ -33,7 +33,7 @@ public class TableProcessFunction extends BroadcastProcessFunction<JSONObject, T
         //建立连接
         java.sql.Connection conn = DriverManager.getConnection(Constat.MYSQL_URL, Constat.MYSQL_USER_NAME, Constat.MYSQL_PASSWORD);
         //获取数据库操作对象
-        String sql = "select * from realtime_v1.table_process_dim";
+        String sql = "select * from realtime_v1_config.table_process_dim";
         PreparedStatement ps = conn.prepareStatement(sql);
         //执行sql语句
         ResultSet rs = ps.executeQuery();

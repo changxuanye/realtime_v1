@@ -2,6 +2,7 @@ package com.dwd.realtime_dwd_base_db;
 
 import com.alibaba.fastjson.JSONObject;
 import com.stream.common.Bean.TableProcessDwd;
+import com.stream.common.utils.JdbcUtil;
 import com.stream.common.utils.JdbcUtils;
 import org.apache.flink.api.common.state.BroadcastState;
 import org.apache.flink.api.common.state.MapStateDescriptor;
@@ -32,9 +33,9 @@ public class BaseDbTableProcessFunction extends BroadcastProcessFunction<JSONObj
     @Override
     public void open(Configuration parameters) throws Exception {
         //将配置信息预加载到程序中
-        Connection mySQLConnection = JdbcUtils.getMySQLConnection();
+        Connection mySQLConnection = JdbcUtil.getMySQLConnection();
         List<TableProcessDwd> tableProcessDwdList
-                = JdbcUtils.queryList(mySQLConnection, "select * from realtime_v1.table_process_dwd", TableProcessDwd.class, true);
+                = JdbcUtils.queryList(mySQLConnection, "select * from realtime_v1_config.table_process_dwd", TableProcessDwd.class, true);
         for (TableProcessDwd tableProcessDwd : tableProcessDwdList) {
             String sourceTable = tableProcessDwd.getSourceTable();
             String sourceType = tableProcessDwd.getSourceType();

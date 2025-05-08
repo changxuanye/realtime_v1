@@ -7,7 +7,8 @@ public class Constant {
     public static final String TOPIC_DB = "xuanye_chang_Business";
     // 用于存储日志数据的 Kafka 主题
     public static final String TOPIC_LOG = "xuanye_chang_log";
-
+    public static final String TOPICLO = "realtime_v2_db";
+    public static final String kafka_db_fact_comment_topic = "realtime_v2_xuanye_chang_comment";
     // MySQL 数据库主机地址
     public static final String MYSQL_HOST = "cdh01";
     // MySQL 数据库端口

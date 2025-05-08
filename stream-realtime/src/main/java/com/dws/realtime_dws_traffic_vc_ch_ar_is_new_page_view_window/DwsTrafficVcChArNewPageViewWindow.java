@@ -164,6 +164,6 @@ public class DwsTrafficVcChArNewPageViewWindow extends BaseApp {
 
         operator.print();
 
-//        operator.sinkTo(FlinkSinkUtil.getDorisSink("dws_traffic_vc_ch_ar_is_new_page_view_window"));
+//        c
     }
 }

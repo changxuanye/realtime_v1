@@ -26,7 +26,7 @@ public class HBaseUtil {
     //获取Hbase连接
     public static Connection getHBaseConnection() throws IOException {
         Configuration conf = new Configuration();
-        conf.set("hbase.zookeeper.quorum", "hadoop102,hadoop103,hadoop104");
+        conf.set("hbase.zookeeper.quorum", "cdh01,cdh02,cdh03");
 
         Connection hbaseConn = ConnectionFactory.createConnection(conf);
         return hbaseConn;
@@ -42,7 +42,7 @@ public class HBaseUtil {
     //获取异步操作HBase的连接对象
     public static AsyncConnection getHBaseAsyncConnection(){
         Configuration conf = new Configuration();
-        conf.set("hbase.zookeeper.quorum", "hadoop102,hadoop103,hadoop104");
+        conf.set("hbase.zookeeper.quorum", "cdh01,cdh02,cdh03");
 
         try {
             AsyncConnection asyncConnection = ConnectionFactory.createAsyncConnection(conf).get();

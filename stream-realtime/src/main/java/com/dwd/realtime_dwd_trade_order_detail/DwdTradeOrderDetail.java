@@ -44,7 +44,7 @@ public class DwdTradeOrderDetail extends BaseSQLApp {
                         "from KafkaTable " +
                         "where `source`['table'] = 'order_detail'");
         tableEnv.createTemporaryView("order_detail", orderDetail);
-        orderDetail.execute().print();
+//        orderDetail.execute().print();
         //TODO 过滤出订单数据
         Table orderInfo = tableEnv.sqlQuery(
                 "select " +
@@ -101,7 +101,7 @@ public class DwdTradeOrderDetail extends BaseSQLApp {
                         "on od.id=act.order_detail_id " +
                         "left join order_detail_coupon cou " +
                         "on od.id=cou.order_detail_id ");
-
+//        result.execute().print();
         //TODO 将关联的结果写到Kafka主题
         //创建动态表和要写入的主题进行映射
         tableEnv.executeSql(
@@ -122,7 +122,7 @@ public class DwdTradeOrderDetail extends BaseSQLApp {
                         "split_activity_amount string," +
                         "split_coupon_amount string," +
                         "split_total_amount string," +
-                        "ts string," +
+                        "ts BIGINT," +
                         "primary key(id) not enforced " +
                         ")" + SQLUtil.getUpsertKafkaDDL(Constant.TOPIC_DWD_TRADE_ORDER_DETAIL));
 

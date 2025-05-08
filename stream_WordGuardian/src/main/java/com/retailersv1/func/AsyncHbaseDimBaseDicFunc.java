@@ -4,6 +4,7 @@ import avro.shaded.com.google.common.cache.Cache;
 import avro.shaded.com.google.common.cache.CacheBuilder;
 import com.alibaba.fastjson.JSONObject;
 import com.stream.common.utils.HbaseUtils;
+import com.stream.common.utils.HbaseUtils1;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.async.ResultFuture;
 import org.apache.flink.streaming.api.functions.async.RichAsyncFunction;

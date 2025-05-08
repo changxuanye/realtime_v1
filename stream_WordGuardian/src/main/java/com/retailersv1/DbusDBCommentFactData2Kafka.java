@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.retailersv1.func.AsyncHbaseDimBaseDicFunc;
 import com.retailersv1.func.IntervalJoinOrderCommentAndOrderInfoFunc;
+import com.stream.common.constant.Constant;
 import com.stream.common.utils.ConfigUtils;
 import com.stream.common.utils.DateTimeUtils;
 import com.stream.common.utils.EnvironmentSettingUtils;
@@ -49,9 +50,9 @@ public class DbusDBCommentFactData2Kafka {
         sensitiveWordsLists = SensitiveWordsUtils.getSensitiveWordsLists();
     }
 
-    private static final String kafka_botstrap_servers = ConfigUtils.getString("kafka.bootstrap.servers");
-    private static final String kafka_cdc_db_topic = ConfigUtils.getString("kafka.cdc.db.topic");
-    private static final String kafka_db_fact_comment_topic = ConfigUtils.getString("kafka.db.fact.comment.topic");
+//    private static final String kafka_botstrap_servers = ConfigUtils.getString("cdh01:9092,cdh02:9092,cdh03:9092");
+//    private static final String kafka_cdc_db_topic = ConfigUtils.getString("realtime_v2_db");
+//    private static final String kafka_db_fact_comment_topic = ConfigUtils.getString("kafka.db.fact.comment.topic");
 
     @SneakyThrows
     public static void main(String[] args) {
@@ -61,13 +62,13 @@ public class DbusDBCommentFactData2Kafka {
         // TODO -XX:ReservedCodeCacheSize=256m -XX:+UseCodeCacheFlushing -XX:CodeCacheMinimumFreeSpace=20%
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        EnvironmentSettingUtils.defaultParameter(env);
+//        EnvironmentSettingUtils.defaultParameter(env);
 
         // 评论表 取数
         SingleOutputStreamOperator<String> kafkaCdcDbSource = env.fromSource(
                 KafkaUtils.buildKafkaSource(
-                        kafka_botstrap_servers,
-                        kafka_cdc_db_topic,
+                       Constant.KAFKA_BROKERS,
+                        Constant.TOPICLO,
                         new Date().toString(),
                         OffsetsInitializer.earliest()
                 ),
@@ -75,19 +76,21 @@ public class DbusDBCommentFactData2Kafka {
                         .withTimestampAssigner((event, timestamp) -> JSONObject.parseObject(event).getLong("ts_ms")),
                 "kafka_cdc_db_source"
         ).uid("kafka_cdc_db_source").name("kafka_cdc_db_source");
-
+        kafkaCdcDbSource.print();
         // 订单主表
         DataStream<JSONObject> filteredOrderInfoStream = kafkaCdcDbSource
                 .map(JSON::parseObject)
                 .filter(json -> json.getJSONObject("source").getString("table").equals("order_info"))
                 .uid("kafka_cdc_db_order_source").name("kafka_cdc_db_order_source");
 
-
+//        filteredOrderInfoStream.print();
         // 评论表进行进行升维处理 和hbase的维度进行关联补充维度数据
         DataStream<JSONObject> filteredStream = kafkaCdcDbSource
                 .map(JSON::parseObject)
                 .filter(json -> json.getJSONObject("source").getString("table").equals("comment_info"))
                 .keyBy(json -> json.getJSONObject("after").getString("appraise"));
+
+//        filteredStream.print();
 
         DataStream<JSONObject> enrichedStream = AsyncDataStream
                 .unorderedWait(
@@ -98,8 +101,9 @@ public class DbusDBCommentFactData2Kafka {
                         100
                 ).uid("async_hbase_dim_base_dic_func")
                 .name("async_hbase_dim_base_dic_func");
+//        enrichedStream.print();
 
-      /*  SingleOutputStreamOperator<JSONObject> orderCommentMap = enrichedStream.map(new RichMapFunction<JSONObject, JSONObject>() {
+ SingleOutputStreamOperator<JSONObject> orderCommentMap = enrichedStream.map(new RichMapFunction<JSONObject, JSONObject>() {
                     @Override
                     public JSONObject map(JSONObject jsonObject){
                         JSONObject resJsonObj = new JSONObject();
@@ -132,6 +136,7 @@ public class DbusDBCommentFactData2Kafka {
                 })
                 .uid("map-order_comment_data")
                 .name("map-order_comment_data");
+//        orderCommentMap.print();
 
         SingleOutputStreamOperator<JSONObject> orderInfoMapDs = filteredOrderInfoStream.map(new RichMapFunction<JSONObject, JSONObject>() {
             @Override
@@ -151,6 +156,7 @@ public class DbusDBCommentFactData2Kafka {
                 return resultObj;
             }
         }).uid("map-order_info_data").name("map-order_info_data");
+//        orderInfoMapDs.print();
 
         // orderCommentMap.order_id join orderInfoMapDs.id
         KeyedStream<JSONObject, String> keyedOrderCommentStream = orderCommentMap.keyBy(data -> data.getString("order_id"));
@@ -160,7 +166,7 @@ public class DbusDBCommentFactData2Kafka {
                 .between(Time.minutes(-1), Time.minutes(1))
                 .process(new IntervalJoinOrderCommentAndOrderInfoFunc())
                 .uid("interval_join_order_comment_and_order_info_func").name("interval_join_order_comment_and_order_info_func");
-
+//        orderMsgAllDs.print();
         SingleOutputStreamOperator<JSONObject> supplementDataMap = orderMsgAllDs.map(new RichMapFunction<JSONObject, JSONObject>() {
             @Override
             public JSONObject map(JSONObject jsonObject) {
@@ -168,6 +174,9 @@ public class DbusDBCommentFactData2Kafka {
                 return jsonObject;
             }
         }).uid("map-generate_comment").name("map-generate_comment");
+        supplementDataMap.print();
+
+
 
         SingleOutputStreamOperator<JSONObject> suppleMapDs = supplementDataMap.map(new RichMapFunction<JSONObject, JSONObject>() {
             private transient Random random;
@@ -186,6 +195,7 @@ public class DbusDBCommentFactData2Kafka {
                 return jsonObject;
             }
         }).uid("map-sensitive-words").name("map-sensitive-words");
+//        suppleMapDs.print();
 
         SingleOutputStreamOperator<JSONObject> suppleTimeFieldDs = suppleMapDs.map(new RichMapFunction<JSONObject, JSONObject>() {
             @Override
@@ -195,12 +205,13 @@ public class DbusDBCommentFactData2Kafka {
             }
         }).uid("add json ds").name("add json ds");
 
+        suppleTimeFieldDs.print();
         suppleTimeFieldDs.map(js -> js.toJSONString())
                 .sinkTo(
-                KafkaUtils.buildKafkaSink(kafka_botstrap_servers, kafka_db_fact_comment_topic)
+                KafkaUtils.buildKafkaSink(Constant.KAFKA_BROKERS, Constant.kafka_db_fact_comment_topic)
         ).uid("kafka_db_fact_comment_sink").name("kafka_db_fact_comment_sink");
 
-       */
+
         env.execute();
     }
 }

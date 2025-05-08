@@ -26,6 +26,8 @@
 
     <dependencies>
 
+
+
         <dependency>
             <groupId>org.example</groupId>
             <artifactId>stream-common</artifactId>

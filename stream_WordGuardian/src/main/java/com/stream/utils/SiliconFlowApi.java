@@ -18,7 +18,7 @@ public class SiliconFlowApi {
 
     private static final ConnectionPool CONNECTION_POOL = new ConnectionPool(200, 5, TimeUnit.MINUTES);
     private static final String SILICON_API_ADDR = "https://api.siliconflow.cn/v1/chat/completions";
-    private static final String API_TOKEN = ConfigUtils.getString("silicon.api.token");
+    private static final String API_TOKEN = "sk-pfaasdbkktgnunlvoapothvybwflwdteckwmhakzqbthcgnj";
     private static final OkHttpClient CLIENT = new OkHttpClient.Builder()
             .connectionPool(CONNECTION_POOL)
             .connectTimeout(10, TimeUnit.SECONDS)
@@ -57,7 +57,7 @@ public class SiliconFlowApi {
 
     private static JSONObject buildRequestBody(String prompt) {
         return new JSONObject()
-                .fluentPut("model", "Pro/deepseek-ai/DeepSeek-R1-Distill-Qwen-7B")
+                .fluentPut("model", "Qwen/Qwen2.5-7B-Instruct")
                 .fluentPut("stream", false)
                 .fluentPut("max_tokens", 512)
                 .fluentPut("temperature", 0.7)
@@ -109,7 +109,7 @@ public class SiliconFlowApi {
         // 测试用例（需要有效token）
         String result = generateBadReview(
                 "给出一个电商差评，攻击性拉满，使用脏话，20字数以内，不需要思考过程",
-                "sk-pfaasdbkktgnunlvoapothvybwflwdteckwmhakzqbthcgnj"
+                API_TOKEN
         );
         System.out.println("生成结果: " + result);
     }
