@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.retailersv1.func.FilterBloomDeduplicatorFunc;
 import com.retailersv1.func.MapCheckRedisSensitiveWordsFunc;
+import com.stream.common.constant.Constant;
 import com.stream.common.utils.ConfigUtils;
 import com.stream.common.utils.EnvironmentSettingUtils;
 import com.stream.common.utils.KafkaUtils;
@@ -28,9 +29,9 @@ import java.util.List;
  */
 public class DbusBanBlackListUserInfo2Kafka {
 
-    private static final String kafka_botstrap_servers = ConfigUtils.getString("kafka.bootstrap.servers");
-    private static final String kafka_db_fact_comment_topic = ConfigUtils.getString("kafka.db.fact.comment.topic");
-    private static final String kafka_result_sensitive_words_topic = ConfigUtils.getString("kafka.result.sensitive.words.topic");
+//    private static final String kafka_botstrap_servers = ConfigUtils.getString("kafka.bootstrap.servers");
+//    private static final String kafka_db_fact_comment_topic = ConfigUtils.getString("kafka.db.fact.comment.topic");
+//    private static final String kafka_result_sensitive_words_topic = ConfigUtils.getString("kafka.result.sensitive.words.topic");
 
     @SneakyThrows
     public static void main(String[] args) {
@@ -38,18 +39,19 @@ public class DbusBanBlackListUserInfo2Kafka {
         System.setProperty("HADOOP_USER_NAME","root");
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        EnvironmentSettingUtils.defaultParameter(env);
+//        EnvironmentSettingUtils.defaultParameter(env);
 
         SingleOutputStreamOperator<String> kafkaCdcDbSource = env.fromSource(
                 KafkaUtils.buildKafkaSource(
-                        kafka_botstrap_servers,
-                        kafka_db_fact_comment_topic,
+                        Constant.KAFKA_BROKERS,
+                        Constant.kafka_db_fact_comment_topic,
                         new Date().toString(),
                         OffsetsInitializer.earliest()
                 ),
                 WatermarkStrategy.noWatermarks(),
                 "kafka_cdc_db_source"
         ).uid("kafka_fact_comment_source").name("kafka_fact_comment_source");
+//      kafkaCdcDbSource.print();
 
 
 
@@ -57,10 +59,12 @@ public class DbusBanBlackListUserInfo2Kafka {
 
         SingleOutputStreamOperator<JSONObject> bloomFilterDs = mapJsonStr.keyBy(data -> data.getLong("order_id"))
                 .filter(new FilterBloomDeduplicatorFunc(1000000, 0.01));
-
+//        bloomFilterDs.print();
         SingleOutputStreamOperator<JSONObject> SensitiveWordsDs = bloomFilterDs.map(new MapCheckRedisSensitiveWordsFunc())
                 .uid("MapCheckRedisSensitiveWord")
                 .name("MapCheckRedisSensitiveWord");
+
+//        SensitiveWordsDs.print();
 
 
 
@@ -79,11 +83,11 @@ public class DbusBanBlackListUserInfo2Kafka {
             }
         }).uid("second sensitive word check").name("second sensitive word check");
 
-        secondCheckMap.print();
+//        secondCheckMap.print();
 
         secondCheckMap.map(data -> data.toJSONString())
                         .sinkTo(
-                                KafkaUtils.buildKafkaSink(kafka_botstrap_servers, kafka_result_sensitive_words_topic)
+                                KafkaUtils.buildKafkaSink(Constant.KAFKA_BROKERS, Constant.kafka_result_sensitive_words_topic)
                         )
                         .uid("sink to kafka result sensitive words topic")
                         .name("sink to kafka result sensitive words topic");
