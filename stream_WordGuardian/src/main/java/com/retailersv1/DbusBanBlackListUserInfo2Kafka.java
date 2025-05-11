@@ -5,9 +5,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.retailersv1.func.FilterBloomDeduplicatorFunc;
 import com.retailersv1.func.MapCheckRedisSensitiveWordsFunc;
+import com.stream.common.Bean.TrafficHomeDetailPageViewBean;
 import com.stream.common.constant.Constant;
+import com.stream.common.function.BeanToJsonStrMapFunction;
 import com.stream.common.utils.ConfigUtils;
 import com.stream.common.utils.EnvironmentSettingUtils;
+import com.stream.common.utils.FlinkSinkUtil;
 import com.stream.common.utils.KafkaUtils;
 import lombok.SneakyThrows;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
@@ -39,8 +42,8 @@ public class DbusBanBlackListUserInfo2Kafka {
         System.setProperty("HADOOP_USER_NAME","root");
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-//        EnvironmentSettingUtils.defaultParameter(env);
-
+        EnvironmentSettingUtils.defaultParameter(env);
+//
         SingleOutputStreamOperator<String> kafkaCdcDbSource = env.fromSource(
                 KafkaUtils.buildKafkaSource(
                         Constant.KAFKA_BROKERS,
@@ -85,13 +88,10 @@ public class DbusBanBlackListUserInfo2Kafka {
 
 //        secondCheckMap.print();
 
-        secondCheckMap.map(data -> data.toJSONString())
-                        .sinkTo(
-                                KafkaUtils.buildKafkaSink(Constant.KAFKA_BROKERS, Constant.kafka_result_sensitive_words_topic)
-                        )
-                        .uid("sink to kafka result sensitive words topic")
-                        .name("sink to kafka result sensitive words topic");
 
+
+             secondCheckMap.map(new BeanToJsonStrMapFunction<>())
+                .sinkTo(FlinkSinkUtil.getDorisSink("user_complaints"));
 
         env.execute();
     }
