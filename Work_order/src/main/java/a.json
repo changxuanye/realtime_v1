@@ -1,0 +1,52 @@
+{
+  "before": {
+    "id": 1609,
+    "out_trade_no": "568442915432638",
+    "order_id": 1608,
+    "user_id": 237,
+    "payment_type": "1101",
+    "trade_no": null,
+    "total_amount": "9649.00",
+    "subject": "联想（Lenovo） 拯救者Y9000P 2024 16英寸游戏笔记本电脑 i9-12900H RTX3060 钛晶灰等1件商品",
+    "payment_status": "1601",
+    "create_time": 1747076015000,
+    "callback_time": null,
+    "callback_content": null,
+    "operate_time": null
+  },
+  "after": {
+    "id": 1609,
+    "out_trade_no": "568442915432638",
+    "order_id": 1608,
+    "user_id": 237,
+    "payment_type": "1101",
+    "trade_no": null,
+    "total_amount": "9649.00",
+    "subject": "联想（Lenovo） 拯救者Y9000P 2024 16英寸游戏笔记本电脑 i9-12900H RTX3060 钛晶灰等1件商品",
+    "payment_status": "1602",
+    "create_time": 1747076015000,
+    "callback_time": 1747076035000,
+    "callback_content": "callback xxxxxxx",
+    "operate_time": 1747076035000
+  },
+  "source": {
+    "version": "1.9.7.Final",
+    "connector": "mysql",
+    "name": "mysql_binlog_source",
+    "ts_ms": 1747052365000,
+    "snapshot": "false",
+    "db": "realtime_v1",
+    "sequence": null,
+    "table": "payment_info",
+    "server_id": 1,
+    "gtid": null,
+    "file": "mysql-bin.000004",
+    "pos": 36482980,
+    "row": 0,
+    "thread": 53149,
+    "query": null
+  },
+  "op": "u",
+  "ts_ms": 1747052389199,
+  "transaction": null
+}

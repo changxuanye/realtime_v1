@@ -13,6 +13,7 @@
         <module>stream-realtime</module>
         <module>stream-common</module>
         <module>stream_WordGuardian</module>
+        <module>Work_order</module>
     </modules>
 
     <properties>
