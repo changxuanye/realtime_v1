@@ -37,8 +37,13 @@ public class Constant {
 
     public static final String TOPIC_DWD_INTERACTION_COMMENT_INFO = "xuanye_chang_dwd_interaction_comment_info";
     public static final String TOPIC_DWD_TRADE_CART_ADD = "xuanye_chang_dwd_trade_cart_add";
+    public static final String TOPIC_DWD_USER_INFO = "xuanye_chang_dwd_user_info";
+    public static final String TOPIC_DWD_INTERACTION_FAVOR_INFO = "xuanye_chang_dwd_favor_info";
+    public static final String TOPIC_DWD_USER_INFO_SUP_MSG = "xuanye_chang_dwd_user_info_sup_msg";
+
 
     public static final String TOPIC_DWD_TRADE_ORDER_DETAIL = "xuanye_dwd_trade_order_detail";
+    public static final String TOPIC_DWD_TRADE_ORDER_INFO = "xuanye_dwd_trade_order_info";
 
     public static final String TOPIC_DWD_TRADE_ORDER_CANCEL = "xuanye_dwd_trade_order_cancel";
 
