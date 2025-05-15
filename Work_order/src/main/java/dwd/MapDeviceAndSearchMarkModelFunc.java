@@ -101,6 +101,13 @@ public class MapDeviceAndSearchMarkModelFunc extends RichMapFunction<JSONObject,
                 jsonObject.put("search_50", round(0.8    * searchRate));
                 break;
             case "健康与养生":
+                jsonObject.put("search_18_24", round(0.2 * searchRate));
+                jsonObject.put("search_25_29", round(0.4 * searchRate));
+                jsonObject.put("search_30_34", round(0.6 * searchRate));
+                jsonObject.put("search_35_39", round(0.7 * searchRate));
+                jsonObject.put("search_40_49", round(0.8 * searchRate));
+                jsonObject.put("search_50", round(0.8    * searchRate));
+                break;
             case "家庭与育儿":
                 jsonObject.put("search_18_24", round(0.1 * searchRate));
                 jsonObject.put("search_25_29", round(0.2 * searchRate));

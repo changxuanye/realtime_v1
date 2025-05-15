@@ -124,11 +124,13 @@ public class DbCdcPageinfoBaseLabel {
             throw new RuntimeException(e);
         }
 
-        win2MinutesPageLogsDs.map(new MapDeviceAndSearchMarkModelFunc(dim_base_categories,device_rate_weight_coefficient,search_rate_weight_coefficient))
-                .print();
-
-
+        SingleOutputStreamOperator<JSONObject> DbCdcPageinfoBaseLabel = win2MinutesPageLogsDs.map(new MapDeviceAndSearchMarkModelFunc(dim_base_categories, device_rate_weight_coefficient, search_rate_weight_coefficient));
+        DbCdcPageinfoBaseLabel.print();
+        DbCdcPageinfoBaseLabel.map(data -> data.toJSONString())
+                .sinkTo(
+                        KafkaUtils.buildKafkaSink(Constat.KAFKA_BROKERS,Constat.TOPIC_DWD_page_base_label)
+                );
+        env.execute("DbusUserInfo6BaseLabel");
         env.execute();
-
     }
 }

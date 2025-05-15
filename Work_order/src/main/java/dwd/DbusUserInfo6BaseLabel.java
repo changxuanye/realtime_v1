@@ -68,6 +68,9 @@ public class DbusUserInfo6BaseLabel {
                 .uid("filter kafka user info")
                 .name("filter kafka user info");
 
+
+
+
         SingleOutputStreamOperator<JSONObject> finalUserInfoDs = userInfoDs.map(new RichMapFunction<JSONObject, JSONObject>() {
             @Override
             public JSONObject map(JSONObject jsonObject){
@@ -158,7 +161,10 @@ public class DbusUserInfo6BaseLabel {
 
         processIntervalJoinUserInfo6BaseMessageDs.print();
 
-
+        processIntervalJoinUserInfo6BaseMessageDs.map(data -> data.toJSONString())
+                .sinkTo(
+                        KafkaUtils.buildKafkaSink(Constat.KAFKA_BROKERS,Constat.TOPIC_DWD_user_base_label)
+                );
         env.execute("DbusUserInfo6BaseLabel");
     }
 

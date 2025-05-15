@@ -20,6 +20,9 @@ public class Constat {
     public static final String TOPIC_DWD_TRAFFIC_PAGE = "xuanye_dwd_traffic_page";
     public static final String TOPIC_DWD_TRAFFIC_ACTION = "xuanye_dwd_traffic_action";
     public static final String TOPIC_DWD_TRAFFIC_DISPLAY = "xuanye_dwd_traffic_display";
+    public static final String TOPIC_DWD_user_base_label = "xuanye_chang_user_base_label";
+    public static final String TOPIC_DWD_order_base_label = "xuanye_chang_order_base_label";
+    public static final String TOPIC_DWD_page_base_label = "xuanye_chang_page_base_label";
 
     public static final String TOPIC_DWD_INTERACTION_COMMENT_INFO = "dwd_interaction_comment_info";
     public static final String TOPIC_DWD_TRADE_CART_ADD = "dwd_trade_cart_add";
