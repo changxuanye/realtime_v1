@@ -48,6 +48,7 @@ public class DbCdcorderinfoBaseLable {
                                         }
                                     }
                                     return 0L;
+
                                 }
                         ),
                 "kafka_cdc_db_source"
